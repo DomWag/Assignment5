@@ -17,10 +17,9 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.Set;
 
-public class AccountManagerPartionHTTPMessageHandler {
-	//TODO Constructor
-	
-	
+public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
+	// TODO Constructor
+
 	@SuppressWarnings("unchecked")
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
@@ -93,7 +92,12 @@ public class AccountManagerPartionHTTPMessageHandler {
 				} catch (InexistentBranchException iBe){
 					.setException(iBe);
 				}
+			default:
+				System.out.println("Unhandled message tag");
+				break;
 			}
-	
+		}
+			baseRequest.setHandled(true);
 
-}}}
+
+}}
