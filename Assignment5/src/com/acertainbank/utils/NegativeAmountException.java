@@ -1,4 +1,4 @@
-package com.acertainbank;
+package com.acertainbank.utils;
 
 /**
  * This Exception is thrown when the amount with
