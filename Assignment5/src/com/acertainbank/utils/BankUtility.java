@@ -120,6 +120,19 @@ public class BankUtility {
 	}
 
 	/**
+	 * Checks if a string is empty or null
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean isEmpty(String str) {
+		return ((str == null) || str.isEmpty());
+	}
+	
+	
+	
+	
+	/**
 	 * Returns the message of the request as a string
 	 * 
 	 * @param request

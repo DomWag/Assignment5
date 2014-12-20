@@ -59,7 +59,14 @@ public class AccountManagerProxy implements AccountManager {
 	}
 	
 	
-	
+	public void stop() {
+		try {
+			client.stop();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 
 	@Override
