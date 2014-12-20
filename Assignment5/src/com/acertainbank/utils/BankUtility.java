@@ -74,7 +74,7 @@ public class BankUtility {
 	 * @throws BookStoreException
 	 */
 	public static List<?> SendAndRecv(HttpClient client,
-			ContentExchange exchange) throws InexistentAccountException, InexistentBranchException {
+			ContentExchange exchange) throws InexistentAccountException, InexistentBranchException, BankException {
 		int exchangeState;
 		try {
 			client.send(exchange);
@@ -103,19 +103,19 @@ public class BankUtility {
 				return bookStoreResponse.getList();
 				
 			} catch (UnsupportedEncodingException ex) {
-				throw new BookStoreException(
-						BookStoreClientConstants.strERR_CLIENT_RESPONSE_DECODING,
+				throw new BankException(
+						BankClientConstants.strERR_CLIENT_RESPONSE_DECODING,
 						ex);
 			}
 		} else if (exchangeState == HttpExchange.STATUS_EXCEPTED) {
-			throw new BookStoreException(
-					BookStoreClientConstants.strERR_CLIENT_REQUEST_EXCEPTION);
+			throw new BankException(
+					BankClientConstants.strERR_CLIENT_REQUEST_EXCEPTION);
 		} else if (exchangeState == HttpExchange.STATUS_EXPIRED) {
-			throw new BookStoreException(
-					BookStoreClientConstants.strERR_CLIENT_REQUEST_TIMEOUT);
+			throw new BankException(
+					BankClientConstants.strERR_CLIENT_REQUEST_TIMEOUT);
 		} else {
-			throw new BookStoreException(
-					BookStoreClientConstants.strERR_CLIENT_UNKNOWN);
+			throw new BankException(
+					BankClientConstants.strERR_CLIENT_UNKNOWN);
 		}
 	}
 
