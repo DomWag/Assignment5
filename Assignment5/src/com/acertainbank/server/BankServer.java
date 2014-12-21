@@ -1,9 +1,10 @@
 package com.acertainbank.server;
 
-import com.acertainbank.client.BankClientConstants;
+import com.acertainbank.utils.BankClientConstants;
 
 public class BankServer {
 	
+	public static void main(String[] args){
 	int listen_on_port = 8081;
 	// TODO handler umwandeln
 	AccountManagerPartionHTTPMessageHandler handler = new AccountManagerPartionHTTPMessageHandler();
@@ -15,9 +16,9 @@ public class BankServer {
 			System.err.println(ex);
 		}
 	}
-	if (BankUtility.createServer(listen_on_port, handler)) {
+	if (BankServerUtility.createServer(listen_on_port, handler)) {
 		;
 	}
 }
-
 }
+

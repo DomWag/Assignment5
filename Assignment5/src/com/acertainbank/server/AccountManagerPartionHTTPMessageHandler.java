@@ -18,6 +18,10 @@ import java.net.URLDecoder;
 import java.util.Set;
 
 public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
+	
+	public AccountManagerPartionHTTPMessageHandler() {
+		// TODO Auto-generated constructor stub
+	}
 	// TODO Constructor
 
 	@SuppressWarnings("unchecked")
