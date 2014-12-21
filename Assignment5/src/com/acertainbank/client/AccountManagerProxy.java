@@ -155,8 +155,18 @@ public class AccountManagerProxy implements AccountManager {
 			throw new InexistentBranchException(branchId);
 
 		}
-		// TODO Auto-generated method stub
-		return 0;
+		ContentExchange exchange = new ContentExchange();
+		// TODO the server adress is not fix, it has to look up
+		String urlString = serverAddress + "/" + BankMessageTag.CALCULATE;
+		TransferObject to = new TransferObject(branchId);
+		String toXMLstring = BankUtility
+				.serializeObjectToXMLString(to);
+		exchange.setMethod("POST");
+		exchange.setURL(urlString);
+		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
+		exchange.setRequestContent(requestContent);
+		double sum = BankUtility.SendAndRecv(this.client, exchange);
+		return sum;
 	}
 
 }

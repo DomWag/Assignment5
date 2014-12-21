@@ -3,7 +3,9 @@ package com.acertainbank.server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+import com.acertainbank.business.CertainBank;
 import com.acertainbank.utils.BankMessageTag;
+import com.acertainbank.utils.BankResponse;
 import com.acertainbank.utils.BankUtility;
 import com.acertainbank.utils.InexistentAccountException;
 import com.acertainbank.utils.InexistentBranchException;
@@ -18,9 +20,9 @@ import java.net.URLDecoder;
 import java.util.Set;
 
 public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
-	
-	public AccountManagerPartionHTTPMessageHandler() {
-		// TODO Auto-generated constructor stub
+	private CertainBank myBank = null;
+	public AccountManagerPartionHTTPMessageHandler(CertainBank bank) {
+		myBank = bank;
 	}
 	// TODO Constructor
 
@@ -32,7 +34,7 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 		String numBooksString = null;
 		int numBooks = -1;
 		String requestURI;
-		BookStoreResponse bookStoreResponse = null;
+		BankResponse bankResponse = null;
 
 		response.setContentType("text/html;charset=utf-8");
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -59,9 +61,9 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				String xml = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject to = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
 				try {
-					.credit(to.getBranchID(), to.getAccountIdOrg(), to.getAmount());
+					myBank.credit(to.getBranchID(), to.getAccountIdOrg(), to.getAmount());
 				} catch (InexistentAccountException iAe){
-					.setException(iAe);
+					bankResponse.setException(iAe);
 				} catch (InexistentBranchException iBe){
 					.setException(iBe);
 				}
@@ -70,7 +72,7 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				String xml2 = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject to2 = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
 				try {
-					.debit(to2.getBranchID(), to2.getAccountIdOrg(), to2.getAmount());
+					myBank.debit(to2.getBranchID(), to2.getAccountIdOrg(), to2.getAmount());
 				} catch (InexistentAccountException iAe){
 					.setException(iAe);
 				} catch (InexistentBranchException iBe){
@@ -81,7 +83,7 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				String xmlT = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject toT = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
 				try {
-					.transfer(toT.getBranchID(), toT.getAccountIdOrg(), to.getAccountIdDest(), to.getAmount());
+					myBank.transfer(toT.getBranchID(), toT.getAccountIdOrg(), to.getAccountIdDest(), to.getAmount());
 				} catch (InexistentAccountException iAe){
 					.setException(iAe);
 				} catch (InexistentBranchException iBe){
@@ -92,7 +94,7 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				String xmlCa = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject toCA = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
 				try {
-					.creditCA(toCA.getBranchID());
+					myBank.calculateExposure(toCA.getBranchID());
 				} catch (InexistentBranchException iBe){
 					.setException(iBe);
 				}

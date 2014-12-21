@@ -27,6 +27,11 @@ public class TransferObject {
 	}
 
 
+	public TransferObject(int branchId2) {
+		this.branchID = branchId2;
+	}
+
+
 	public double getAmount() {
 		return amount;
 	}
