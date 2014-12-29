@@ -98,7 +98,7 @@ public class CertainBank implements AccountManager {
 		Iterator it = accountMap.entrySet().iterator();
 		Map.Entry<Long, Account> pair = (Map.Entry<Long, Account>) it.next();
 		long branch = pair.getValue().getBranchID();
-		if (branch == branchId) {
+		if (branch == branchId && pair.getValue().getAmount() < 0) {
 			sum = sum + pair.getValue().getAmount();
 		}
 		return sum;
