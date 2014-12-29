@@ -18,6 +18,7 @@ import com.acertainbank.utils.NegativeAmountException;
  *
  */
 public class CertainBank implements AccountManager {
+	
 	private HashMap<Long, Account> accountMap = null;
 	private HashSet<Long> bankSet = null;
 

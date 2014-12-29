@@ -13,6 +13,15 @@ public class Account {
 
 	int branchID;
 	int accoundID;
+	
+	double amount;
+	
+	public Account(int branchID, int accoundID, double amount) {
+		this.branchID = branchID;
+		this.accoundID = accoundID;
+		this.amount = amount;
+	}
+	
 	public double getAmount() {
 		return amount;
 	}
@@ -21,19 +30,6 @@ public class Account {
 		this.amount = amount;
 	}
 
-	double amount;
-	
-	/**
-	 * 
-	 * @param branchID
-	 * @param accoundID
-	 * @param amount
-	 */
-	public Account(int branchID, int accoundID, double amount) {
-		this.branchID = branchID;
-		this.accoundID = accoundID;
-		this.amount = amount;
-	}
 	
 	@Override
 	public boolean equals(Object other){
@@ -58,5 +54,4 @@ public class Account {
 	public long getBranchID() {
 		return branchID;
 	}
-
 }

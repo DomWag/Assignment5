@@ -16,6 +16,7 @@ import com.acertainbank.utils.InexistentAccountException;
 import com.acertainbank.utils.InexistentBranchException;
 import com.acertainbank.utils.NegativeAmountException;
 import com.acertainbank.utils.TransferObject;
+import com.sun.tools.javac.util.List;
 
 public class AccountManagerProxy implements AccountManager {
 	
@@ -181,8 +182,18 @@ public class AccountManagerProxy implements AccountManager {
 		exchange.setURL(urlString);
 		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
 		exchange.setRequestContent(requestContent);
-		double sum = BankUtility.SendAndRecv(this.client, exchange);
-		return sum;
+		List<Double> exposure = null;
+		
+		try {
+			exposure = (List<Double>) BankUtility.SendAndRecv(this.client, exchange);
+		} catch (InexistentAccountException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BankException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return exposure.get(0);
 	}
 
 }
