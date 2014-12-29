@@ -18,7 +18,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 public class BankUtility {
 
 	/**
-	 * Convert a request URI to the message tags supported in CertainBookStore
+	 * Convert a request URI to the message tags supported in CertainBank
 	 * 
 	 * @param requestURI
 	 * @return
@@ -93,14 +93,14 @@ public class BankUtility {
 
 		if (exchangeState == HttpExchange.STATUS_COMPLETED) {
 			try {
-				BankResponse bookStoreResponse = (BookStoreResponse) BookStoreUtility
+				BankResponse bankResponse = (BankResponse) BankUtility
 						.deserializeXMLStringToObject(exchange
 								.getResponseContent().trim());
-				BookStoreException ex = bookStoreResponse.getException();
+				BankException ex = bankResponse.getException();
 				if (ex != null) {
 					throw ex;
 				}
-				return bookStoreResponse.getList();
+				return bankResponse.getList();
 				
 			} catch (UnsupportedEncodingException ex) {
 				throw new BankException(

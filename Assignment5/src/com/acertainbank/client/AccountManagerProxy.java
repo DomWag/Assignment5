@@ -9,6 +9,7 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import com.acertainbank.*;
 import com.acertainbank.utils.BankClientConstants;
+import com.acertainbank.utils.BankException;
 import com.acertainbank.utils.BankMessageTag;
 import com.acertainbank.utils.BankUtility;
 import com.acertainbank.utils.InexistentAccountException;
@@ -91,7 +92,12 @@ public class AccountManagerProxy implements AccountManager {
 		exchange.setURL(urlString);
 		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
 		exchange.setRequestContent(requestContent);
-		BankUtility.SendAndRecv(this.client, exchange);
+		try {
+			BankUtility.SendAndRecv(this.client, exchange);
+		} catch (BankException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -117,7 +123,12 @@ public class AccountManagerProxy implements AccountManager {
 		exchange.setURL(urlString);
 		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
 		exchange.setRequestContent(requestContent);
-		BankUtility.SendAndRecv(this.client, exchange);
+		try {
+			BankUtility.SendAndRecv(this.client, exchange);
+		} catch (BankException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// TODO Auto-generated method stub
 
 	}
@@ -144,12 +155,17 @@ public class AccountManagerProxy implements AccountManager {
 		exchange.setURL(urlString);
 		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
 		exchange.setRequestContent(requestContent);
-		BankUtility.SendAndRecv(this.client, exchange);
+		try {
+			BankUtility.SendAndRecv(this.client, exchange);
+		} catch (BankException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
 	@Override
-	public double calculateExposure(int branchId)
+	public double calculateExposure(int branchId) // The bottom of this doens't look right. 
 			throws InexistentBranchException {
 		if (branchId < 0 ){
 			throw new InexistentBranchException(branchId);
