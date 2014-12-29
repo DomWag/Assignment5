@@ -96,9 +96,14 @@ public class BankUtility {
 				BankResponse bankResponse = (BankResponse) BankUtility
 						.deserializeXMLStringToObject(exchange
 								.getResponseContent().trim());
-				BankException ex = bankResponse.getException();
+				Exception ex = bankResponse.getException();
 				if (ex != null) {
-					throw ex;
+					try {
+						throw ex;
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				return bankResponse.getList();
 				

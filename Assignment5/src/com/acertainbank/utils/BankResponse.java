@@ -8,10 +8,10 @@ import java.util.List;
  * 
  */
 public class BankResponse {
-	private BankException exception;
+	private Exception exception;
 	private List<?> list;
 
-	public BankException getException() {
+	public Exception getException() {
 		return exception;
 	}
 
