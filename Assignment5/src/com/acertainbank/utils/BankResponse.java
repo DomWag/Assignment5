@@ -8,15 +8,14 @@ import java.util.List;
  * 
  */
 public class BankResponse {
-	private Exception exception;
+	private BankException exception;
+	private InexistentAccountException iAe;
+	private InexistentBranchException iBe;
+	private NegativeAmountException nAe;
 	private List<?> list;
 
-	public Exception getException() {
+	public  Exception getException() {
 		return exception;
-	}
-
-	public void setException(BankException exception) {
-		this.exception = exception;
 	}
 
 	public BankResponse(BankException exception) {
@@ -24,7 +23,10 @@ public class BankResponse {
 	}
 
 	public BankResponse() {
-		this.setException(null);
+		this.exception = null;
+		this.iAe = null;
+		this.iBe = null;
+		this.nAe = null;
 		this.setList(null);
 	}
 
@@ -35,4 +37,17 @@ public class BankResponse {
 	public void setList(List<?> list) {
 		this.list = list;
 	}
+
+	public void setException(BankException exception) {
+		this.exception = exception;
+	}
+	public void setException(InexistentAccountException iAe) {
+		this.iAe = iAe;
+	}
+	public void setException(InexistentBranchException iBe) {
+		this.iBe = iBe;
+	}
+	public void setException(NegativeAmountException nAe) {
+		this.nAe = nAe;
+	} 
 }

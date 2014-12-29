@@ -9,6 +9,7 @@ import com.acertainbank.utils.BankResponse;
 import com.acertainbank.utils.BankUtility;
 import com.acertainbank.utils.InexistentAccountException;
 import com.acertainbank.utils.InexistentBranchException;
+import com.acertainbank.utils.NegativeAmountException;
 import com.acertainbank.utils.TransferObject;
 
 import javax.servlet.ServletException;
@@ -16,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.Set;
 
 public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 	private CertainBank myBank = null;
@@ -62,41 +61,46 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				TransferObject to = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
 				try {
 					myBank.credit(to.getBranchID(), to.getAccountIdOrg(), to.getAmount());
+				}  catch (NegativeAmountException nAe){
+					bankResponse.setException(nAe);
 				} catch (InexistentAccountException iAe){
 					bankResponse.setException(iAe);
 				} catch (InexistentBranchException iBe){
-					.setException(iBe);
+					bankResponse.setException(iBe);
 				}
-				
 			case DEBIT:
 				String xml2 = BankUtility.extractPOSTDataFromRequest(request);
-				TransferObject to2 = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
+				TransferObject to2 = (TransferObject) BankUtility.deserializeXMLStringToObject(xml2);
 				try {
 					myBank.debit(to2.getBranchID(), to2.getAccountIdOrg(), to2.getAmount());
+				} catch (NegativeAmountException nAe){
+					bankResponse.setException(nAe);
 				} catch (InexistentAccountException iAe){
-					.setException(iAe);
+					bankResponse.setException(iAe);
 				} catch (InexistentBranchException iBe){
-					.setException(iBe);
+					bankResponse.setException(iBe);
 				}
 				
 			case TRANSFER:
 				String xmlT = BankUtility.extractPOSTDataFromRequest(request);
-				TransferObject toT = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
+				TransferObject toT = (TransferObject) BankUtility.deserializeXMLStringToObject(xmlT);
 				try {
-					myBank.transfer(toT.getBranchID(), toT.getAccountIdOrg(), to.getAccountIdDest(), to.getAmount());
+					myBank.transfer(toT.getBranchID(), toT.getAccountIdOrg(), toT.getAccountIdDest(), toT.getAmount());
+				} catch (NegativeAmountException nAe){
+					bankResponse.setException(nAe);
 				} catch (InexistentAccountException iAe){
-					.setException(iAe);
+					bankResponse.setException(iAe);
 				} catch (InexistentBranchException iBe){
-					.setException(iBe);
+					bankResponse.setException(iBe);
 				}
 				
 			case CALCULATE:
 				String xmlCa = BankUtility.extractPOSTDataFromRequest(request);
-				TransferObject toCA = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
+				TransferObject toCA = (TransferObject) BankUtility.deserializeXMLStringToObject(xmlCa);
 				try {
 					myBank.calculateExposure(toCA.getBranchID());
 				} catch (InexistentBranchException iBe){
-					.setException(iBe);
+					bankResponse.setException(iBe);
 				}
 			default:
 				System.out.println("Unhandled message tag");
@@ -104,6 +108,5 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 			}
 		}
 			baseRequest.setHandled(true);
-
-
-}}
+	}
+}
