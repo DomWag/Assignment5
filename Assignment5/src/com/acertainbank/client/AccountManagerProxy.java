@@ -1,6 +1,8 @@
 package com.acertainbank.client;
 
 
+import java.util.List;
+
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpExchange.ContentExchange;
 import org.eclipse.jetty.io.Buffer;
@@ -16,7 +18,6 @@ import com.acertainbank.utils.InexistentAccountException;
 import com.acertainbank.utils.InexistentBranchException;
 import com.acertainbank.utils.NegativeAmountException;
 import com.acertainbank.utils.TransferObject;
-import com.sun.tools.javac.util.List;
 
 public class AccountManagerProxy implements AccountManager {
 	
