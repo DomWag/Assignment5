@@ -73,7 +73,7 @@ public class BankUtility {
 	 * @return A List<Book> for a get function, otherwise null
 	 * @throws BookStoreException
 	 */
-	public static List<?> SendAndRecv(HttpClient client,
+	public static double SendAndRecv(HttpClient client,
 			ContentExchange exchange) throws InexistentAccountException, InexistentBranchException, BankException {
 		int exchangeState;
 		try {
@@ -105,7 +105,7 @@ public class BankUtility {
 						e.printStackTrace();
 					}
 				}
-				return bankResponse.getList();
+				return bankResponse.getCalculation();
 				
 			} catch (UnsupportedEncodingException ex) {
 				throw new BankException(

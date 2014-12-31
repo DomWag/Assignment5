@@ -183,10 +183,10 @@ public class AccountManagerProxy implements AccountManager {
 		exchange.setURL(urlString);
 		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
 		exchange.setRequestContent(requestContent);
-		List<Double> exposure = null;
+		double exposure = 0;
 		
 		try {
-			exposure = (List<Double>) BankUtility.SendAndRecv(this.client, exchange);
+			exposure = BankUtility.SendAndRecv(this.client, exchange);
 		} catch (InexistentAccountException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -194,7 +194,7 @@ public class AccountManagerProxy implements AccountManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return exposure.get(0);
+		return exposure;
 	}
 
 }

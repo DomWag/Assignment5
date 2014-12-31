@@ -12,7 +12,7 @@ public class BankResponse {
 	private InexistentAccountException iAe;
 	private InexistentBranchException iBe;
 	private NegativeAmountException nAe;
-	private List<?> list;
+	private double calculation;
 
 	public  Exception getException() {
 		return exception;
@@ -27,16 +27,10 @@ public class BankResponse {
 		this.iAe = null;
 		this.iBe = null;
 		this.nAe = null;
-		this.setList(null);
+		this.calculation = 0;
 	}
 
-	public List<?> getList() {
-		return list;
-	}
-
-	public void setList(List<?> list) {
-		this.list = list;
-	}
+	
 
 	public void setException(BankException exception) {
 		this.exception = exception;
@@ -49,5 +43,13 @@ public class BankResponse {
 	}
 	public void setException(NegativeAmountException nAe) {
 		this.nAe = nAe;
+	}
+
+	public double getCalculation() {
+		return calculation;
+	}
+
+	public void setCalculation(double d) {
+		this.calculation = d;
 	} 
 }

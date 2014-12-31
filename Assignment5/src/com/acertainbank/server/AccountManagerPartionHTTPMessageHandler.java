@@ -57,6 +57,8 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 		} else {
 			switch (messageTag) {
 			case CREDIT:
+				bankResponse = new BankResponse();
+
 				String xml = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject to = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
 				try {
@@ -68,7 +70,13 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				} catch (InexistentBranchException iBe){
 					bankResponse.setException(iBe);
 				}
+				
+				String xmlString = BankUtility.serializeObjectToXMLString(bankResponse);
+				response.getWriter().println(xmlString);
+				break;
 			case DEBIT:
+				bankResponse = new BankResponse();
+
 				String xml2 = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject to2 = (TransferObject) BankUtility.deserializeXMLStringToObject(xml2);
 				try {
@@ -81,7 +89,13 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 					bankResponse.setException(iBe);
 				}
 				
+				String xmlString2 = BankUtility.serializeObjectToXMLString(bankResponse);
+				response.getWriter().println(xmlString2);
+				break;
+				
 			case TRANSFER:
+				bankResponse = new BankResponse();
+
 				String xmlT = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject toT = (TransferObject) BankUtility.deserializeXMLStringToObject(xmlT);
 				try {
@@ -94,14 +108,23 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 					bankResponse.setException(iBe);
 				}
 				
+				String xmlString3 = BankUtility.serializeObjectToXMLString(bankResponse);
+				response.getWriter().println(xmlString3);
+				break;
+				
 			case CALCULATE:
+				bankResponse = new BankResponse();
 				String xmlCa = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject toCA = (TransferObject) BankUtility.deserializeXMLStringToObject(xmlCa);
 				try {
-					myBank.calculateExposure(toCA.getBranchID());
+					bankResponse.setCalculation(myBank.calculateExposure(toCA.getBranchID()));
 				} catch (InexistentBranchException iBe){
 					bankResponse.setException(iBe);
 				}
+				
+				String xmlString4 = BankUtility.serializeObjectToXMLString(bankResponse);
+				response.getWriter().println(xmlString4);
+				break;
 			default:
 				System.out.println("Unhandled message tag");
 				break;
