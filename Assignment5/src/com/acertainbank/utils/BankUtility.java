@@ -74,7 +74,7 @@ public class BankUtility {
 	 * @throws BookStoreException
 	 */
 	public static double SendAndRecv(HttpClient client,
-			ContentExchange exchange) throws InexistentAccountException, InexistentBranchException, BankException {
+			ContentExchange exchange) throws InexistentBranchException, BankException {
 		int exchangeState;
 		try {
 			client.send(exchange);

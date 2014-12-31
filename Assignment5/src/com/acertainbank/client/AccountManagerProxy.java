@@ -187,9 +187,6 @@ public class AccountManagerProxy implements AccountManager {
 		
 		try {
 			exposure = BankUtility.SendAndRecv(this.client, exchange);
-		} catch (InexistentAccountException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (BankException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
