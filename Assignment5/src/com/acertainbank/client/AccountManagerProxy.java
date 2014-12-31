@@ -117,7 +117,7 @@ public class AccountManagerProxy implements AccountManager {
 		
 		ContentExchange exchange = new ContentExchange();
 		// TODO the server adress is not fix, it has to look up
-		String urlString = serverAddress + "/" + BankMessageTag.CREDIT;
+		String urlString = serverAddress + "/" + BankMessageTag.DEBIT;
 		TransferObject to = new TransferObject(amount, branchId, accountId);
 		String toXMLstring = BankUtility
 				.serializeObjectToXMLString(to);
@@ -149,7 +149,7 @@ public class AccountManagerProxy implements AccountManager {
 		
 		ContentExchange exchange = new ContentExchange();
 		// TODO the server adress is not fix, it has to look up
-		String urlString = serverAddress + "/" + BankMessageTag.CREDIT;
+		String urlString = serverAddress + "/" + BankMessageTag.TRANSFER;
 		TransferObject to = new TransferObject(amount, branchId, accountIdOrig, accountIdDest);
 		String toXMLstring = BankUtility
 				.serializeObjectToXMLString(to);
