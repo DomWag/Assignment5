@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.acertainbank.AccountManager;
 import com.acertainbank.utils.InexistentAccountException;
@@ -18,7 +21,11 @@ import com.acertainbank.utils.NegativeAmountException;
  *
  */
 public class CertainBank implements AccountManager {
-	
+
+	private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+	private Lock sharedLock = readWriteLock.readLock();
+	private Lock exclusiveLock = readWriteLock.writeLock();
+
 	private HashMap<Long, Account> accountMap = null;
 	private HashSet<Long> bankSet = null;
 
@@ -39,8 +46,11 @@ public class CertainBank implements AccountManager {
 				+ accountId))) {
 			throw new InexistentAccountException(accountId);
 		}
+
+		exclusiveLock.lock();
 		Account ac = accountMap.get(Long.parseLong(branchId + "" + accountId));
 		ac.setAmount(ac.getAmount() + amount);
+		exclusiveLock.unlock();
 
 	}
 
@@ -56,9 +66,10 @@ public class CertainBank implements AccountManager {
 				+ accountId))) {
 			throw new InexistentAccountException(accountId);
 		}
-
+		exclusiveLock.lock();
 		Account ac = accountMap.get(Long.parseLong(branchId + "" + accountId));
 		ac.setAmount(ac.getAmount() - amount);
+		exclusiveLock.unlock();
 
 	}
 
@@ -78,12 +89,14 @@ public class CertainBank implements AccountManager {
 			throw new InexistentAccountException(accountIdDest);
 		}
 
+		exclusiveLock.lock();
 		Account ac = accountMap.get(Long.parseLong(branchId + ""
 				+ accountIdOrig));
 		ac.setAmount(ac.getAmount() - amount);
 		Account acD = accountMap.get(Long.parseLong(branchId + ""
 				+ accountIdDest));
 		acD.setAmount(acD.getAmount() + amount);
+		exclusiveLock.unlock();
 
 	}
 
@@ -95,12 +108,18 @@ public class CertainBank implements AccountManager {
 			throw new InexistentBranchException(branchId);
 		}
 		double sum = 0;
+
+		sharedLock.lock();
 		Iterator it = accountMap.entrySet().iterator();
-		Map.Entry<Long, Account> pair = (Map.Entry<Long, Account>) it.next();
-		long branch = pair.getValue().getBranchID();
-		if (branch == branchId && pair.getValue().getAmount() < 0) {
-			sum = sum + pair.getValue().getAmount();
+		while (it.hasNext()) {
+			Map.Entry<Long, Account> pair = (Map.Entry<Long, Account>) it
+					.next();
+			long branch = pair.getValue().getBranchID();
+			if (branch == branchId && pair.getValue().getAmount() < 0) {
+				sum = sum + pair.getValue().getAmount();
+			}
 		}
+		sharedLock.unlock();
 		return sum;
 	}
 
