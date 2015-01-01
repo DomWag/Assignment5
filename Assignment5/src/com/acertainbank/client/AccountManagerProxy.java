@@ -1,7 +1,6 @@
 package com.acertainbank.client;
 
 
-import java.util.List;
 
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpExchange.ContentExchange;
@@ -85,7 +84,7 @@ public class AccountManagerProxy implements AccountManager {
 		}
 		
 		ContentExchange exchange = new ContentExchange();
-		// TODO the server adress is not fix, it has to look up
+		// TODO the server address is not fix, it has to look up
 		String urlString = serverAddress + "/" + BankMessageTag.CREDIT;
 		TransferObject to = new TransferObject(amount, branchId, accountId);
 		String toXMLstring = BankUtility

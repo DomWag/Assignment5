@@ -4,7 +4,7 @@
 package com.acertainbank.business;
 
 /**
- * This class symbolize a bank account.
+ * This class symbolizes a bank account.
  * @author Dominik Wagner
  *
  */
@@ -13,7 +13,6 @@ public class Account {
 
 	int branchID;
 	int accoundID;
-	
 	double amount;
 	
 	public Account(int branchID, int accoundID, double amount) {
@@ -39,7 +38,7 @@ public class Account {
 		
 		Account that = (Account) other;
 		
-		return (this.branchID == (that.branchID)) && (this.accoundID == (that.accoundID));
+		return (this.branchID == (that.branchID)) && (this.accoundID == (that.accoundID) && this.amount == that.amount);
 	}
 	
 	@Override
@@ -51,7 +50,7 @@ public class Account {
 		return hashCode;
 	}
 	
-	public long getBranchID() {
+	public Integer getBranchID() {
 		return branchID;
 	}
 }

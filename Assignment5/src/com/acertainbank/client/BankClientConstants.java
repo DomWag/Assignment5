@@ -12,6 +12,7 @@ public class BankClientConstants {
 	public static final String strERR_CLIENT_UNKNOWN = "CLIENT_UNKNOWN";
 	public static final String strERR_CLIENT_ENCODING = "CLIENT_ENCODING";
 	public static final String PROPERTY_KEY_SERVER_PORT = null;
+	public static final String PROPERTY_KEY_LOCAL_TEST = null;
 
 
 }

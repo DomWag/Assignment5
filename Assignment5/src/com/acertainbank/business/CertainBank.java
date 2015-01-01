@@ -29,6 +29,22 @@ public class CertainBank implements AccountManager {
 	private HashMap<Long, Account> accountMap = null;
 	private HashSet<Long> bankSet = null;
 
+	public HashMap<Long, Account> getAccountMap() {
+		return accountMap;
+	}
+
+	public void setAccountMap(HashMap<Long, Account> accountMap) {
+		this.accountMap = accountMap;
+	}
+
+	public HashSet<Long> getBankSet() {
+		return bankSet;
+	}
+
+	public void setBankSet(HashSet<Long> bankSet) {
+		this.bankSet = bankSet;
+	}
+
 	public CertainBank() {
 		accountMap = new HashMap<Long, Account>();
 		bankSet = new HashSet<Long>();
@@ -38,9 +54,10 @@ public class CertainBank implements AccountManager {
 	public void credit(int branchId, int accountId, double amount)
 			throws InexistentBranchException, InexistentAccountException,
 			NegativeAmountException {
+		
 		if (amount < 0) {
 			throw new NegativeAmountException(amount);
-		} else if (!bankSet.contains(branchId)) {
+		} else if (!bankSet.contains((long) branchId)) {
 			throw new InexistentBranchException(branchId);
 		} else if (!accountMap.containsKey(Long.parseLong(branchId + ""
 				+ accountId))) {
