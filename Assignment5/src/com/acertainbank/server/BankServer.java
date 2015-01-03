@@ -7,7 +7,7 @@ public class BankServer {
 	
 	public static void main(String[] args){
 		CertainBank cb = new CertainBank();
-	int listen_on_port = 8088;
+	int listen_on_port = 8081;
 	// TODO handler umwandeln
 	AccountManagerPartionHTTPMessageHandler handler = new AccountManagerPartionHTTPMessageHandler(cb);
 	String server_port_string = System.getProperty(BankClientConstants.PROPERTY_KEY_SERVER_PORT);
