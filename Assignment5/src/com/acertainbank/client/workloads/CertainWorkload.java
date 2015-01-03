@@ -54,10 +54,10 @@ public class CertainWorkload {
 
 		// Initialize the RPC interfaces if its not a localTest, the variable is
 		// overridden if the property is set
-	//	String localTestProperty = System
-	//		.getProperty(BankClientConstants.PROPERTY_KEY_LOCAL_TEST);
-	//	localTest = (localTestProperty != null) ? Boolean
-	//			.parseBoolean(localTestProperty) : localTest;
+		String localTestProperty = System
+			.getProperty(BankClientConstants.PROPERTY_KEY_LOCAL_TEST);
+		localTest = (localTestProperty != null) ? Boolean
+				.parseBoolean(localTestProperty) : localTest;
 
 		CertainBank bank = null;
 		AccountManager accountManager = null;
