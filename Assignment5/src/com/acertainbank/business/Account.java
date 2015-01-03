@@ -11,10 +11,22 @@ package com.acertainbank.business;
 public class Account {
 	
 
-	int branchID;
-	int accoundID;
-	double amount;
+	private int branchID;
+	private int accoundID;
+	private double amount;
 	
+	public int getAccoundID() {
+		return accoundID;
+	}
+
+	public void setAccoundID(int accoundID) {
+		this.accoundID = accoundID;
+	}
+
+	public void setBranchID(int branchID) {
+		this.branchID = branchID;
+	}
+
 	public Account(int branchID, int accoundID, double amount) {
 		this.branchID = branchID;
 		this.accoundID = accoundID;

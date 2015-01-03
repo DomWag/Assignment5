@@ -5,8 +5,6 @@ package com.acertainbank.business;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -26,28 +24,18 @@ public class CertainBank implements AccountManager {
 	private Lock sharedLock = readWriteLock.readLock();
 	private Lock exclusiveLock = readWriteLock.writeLock();
 
-	private HashMap<Long, Account> accountMap = null;
-	private HashSet<Long> bankSet = null;
+	private HashMap<Integer, HashSet<Account>> branchAccountMap = null;
 
-	public HashMap<Long, Account> getAccountMap() {
-		return accountMap;
+	public HashMap<Integer, HashSet<Account>> getBranchAccountMap() {
+		return branchAccountMap;
 	}
 
-	public void setAccountMap(HashMap<Long, Account> accountMap) {
-		this.accountMap = accountMap;
-	}
-
-	public HashSet<Long> getBankSet() {
-		return bankSet;
-	}
-
-	public void setBankSet(HashSet<Long> bankSet) {
-		this.bankSet = bankSet;
+	public void setAccountMap(HashMap<Integer, HashSet<Account>> branchAccountMap) {
+		this.branchAccountMap = branchAccountMap;
 	}
 
 	public CertainBank() {
-		accountMap = new HashMap<Long, Account>();
-		bankSet = new HashSet<Long>();
+		branchAccountMap = new HashMap<Integer, HashSet<Account>>();
 	}
 
 	@Override
@@ -57,16 +45,21 @@ public class CertainBank implements AccountManager {
 		
 		if (amount < 0) {
 			throw new NegativeAmountException(amount);
-		} else if (!bankSet.contains((long) branchId)) {
+		} else if (!branchAccountMap.containsKey(branchId)) {
 			throw new InexistentBranchException(branchId);
-		} else if (!accountMap.containsKey(Long.parseLong(branchId + ""
-				+ accountId))) {
+		} else if (!branchAccountMap.get(branchId).contains(accountId)) {
 			throw new InexistentAccountException(accountId);
 		}
 
 		exclusiveLock.lock();
-		Account ac = accountMap.get(Long.parseLong(branchId + "" + accountId));
-		ac.setAmount(ac.getAmount() + amount);
+		
+		for (Account a: branchAccountMap.get(branchId)){
+			
+			if (a.getAccoundID() == accountId){
+				a.setAmount(a.getAmount() + amount);
+			}
+		}
+		
 		exclusiveLock.unlock();
 	}
 
@@ -76,15 +69,21 @@ public class CertainBank implements AccountManager {
 			NegativeAmountException {
 		if (amount < 0) {
 			throw new NegativeAmountException(amount);
-		} else if (!bankSet.contains(branchId)) {
+		} else if (!branchAccountMap.containsKey(branchId)) {
 			throw new InexistentBranchException(branchId);
-		} else if (!accountMap.containsKey(Long.parseLong(branchId + ""
-				+ accountId))) {
+		} else if (!branchAccountMap.get(branchId).contains(accountId)) {
 			throw new InexistentAccountException(accountId);
 		}
+		
 		exclusiveLock.lock();
-		Account ac = accountMap.get(Long.parseLong(branchId + "" + accountId));
-		ac.setAmount(ac.getAmount() - amount);
+		
+		for (Account a: branchAccountMap.get(branchId)){
+			
+			if (a.getAccoundID() == accountId){
+				a.setAmount(a.getAmount() - amount);
+			}
+		}
+		
 		exclusiveLock.unlock();
 
 	}
@@ -95,48 +94,60 @@ public class CertainBank implements AccountManager {
 			InexistentAccountException, NegativeAmountException {
 		if (amount < 0) {
 			throw new NegativeAmountException(amount);
-		} else if (!bankSet.contains(branchId)) {
+		} else if (!branchAccountMap.containsKey(branchId)) {
 			throw new InexistentBranchException(branchId);
-		} else if (!accountMap.containsKey(Long.parseLong(branchId + ""
-				+ accountIdOrig))) {
+		} else if (!branchAccountMap.get(branchId).contains(accountIdOrig)) {
 			throw new InexistentAccountException(accountIdOrig);
-		} else if (!accountMap.containsKey(Long.parseLong(branchId + ""
-				+ accountIdDest))) {
+		}  else if (!branchAccountMap.get(branchId).contains(accountIdDest)) {
 			throw new InexistentAccountException(accountIdDest);
 		}
 
 		exclusiveLock.lock();
-		Account ac = accountMap.get(Long.parseLong(branchId + ""
-				+ accountIdOrig));
-		ac.setAmount(ac.getAmount() - amount);
-		Account acD = accountMap.get(Long.parseLong(branchId + ""
-				+ accountIdDest));
-		acD.setAmount(acD.getAmount() + amount);
-		exclusiveLock.unlock();
-
+		Account origin = null;
+		Account destination = null;
+		
+		for (Account a: branchAccountMap.get(branchId)){
+			
+			if (a.getAccoundID() == accountIdOrig){
+				origin = a;
+			}
+		}
+		
+		for (Account a: branchAccountMap.get(branchId)){
+			
+			if (a.getAccoundID() == accountIdDest){
+				destination = a;
+			}
+		}
+		origin.setAmount(origin.getAmount() - amount);
+		destination.setAmount(destination.getAmount() + amount);
+		
+		exclusiveLock.unlock();	
 	}
 
 	@Override
 	public double calculateExposure(int branchId)
 			throws InexistentBranchException {
 
-		if (!bankSet.contains(branchId)) {
+		if (!branchAccountMap.containsKey(branchId)) {
 			throw new InexistentBranchException(branchId);
 		}
 		double sum = 0;
 
 		sharedLock.lock();
-		Iterator it = accountMap.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<Long, Account> pair = (Map.Entry<Long, Account>) it
-					.next();
-			long branch = pair.getValue().getBranchID();
-			if (branch == branchId && pair.getValue().getAmount() < 0) {
-				sum = sum + pair.getValue().getAmount();
-			}
+		
+		for (Account a: branchAccountMap.get(branchId)){
+			
+			if (a.getAmount() < 0){
+				
+				sum += a.getAmount();
+			}	
 		}
+		
+		sum = Math.abs(sum); // absolute value
+		
 		sharedLock.unlock();
-		return sum;
+		return sum; 
 	}
 
 }

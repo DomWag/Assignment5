@@ -126,16 +126,16 @@ public class CertainWorkload {
 	
 	public static void initializeBankData(CertainBank acertainbank)  {
 		
-		HashMap<Long, Account> accountMap = new HashMap<Long, Account>();
+		HashMap<Integer, HashSet<Account>> branchAccountMap = new HashMap<Integer, HashSet<Account>>();
 		
 		Account bob = new Account(1, 1, 1000);
 		
-		HashSet<Long> banks = new HashSet<Long>();
-		banks.add((long) 1);
+		HashSet<Account> accountSet = new HashSet<Account>();
 		
-		accountMap.put((long) 11, bob);
+		accountSet.add(bob);
 		
-		acertainbank.setAccountMap(accountMap);
-		acertainbank.setBankSet(banks);
+		branchAccountMap.put(1, accountSet);
+		
+		acertainbank.setAccountMap(branchAccountMap);
 	}
 }
