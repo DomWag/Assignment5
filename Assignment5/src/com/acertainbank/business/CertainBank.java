@@ -68,7 +68,6 @@ public class CertainBank implements AccountManager {
 		Account ac = accountMap.get(Long.parseLong(branchId + "" + accountId));
 		ac.setAmount(ac.getAmount() + amount);
 		exclusiveLock.unlock();
-
 	}
 
 	@Override
