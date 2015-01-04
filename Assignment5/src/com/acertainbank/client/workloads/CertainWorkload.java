@@ -48,7 +48,7 @@ public class CertainWorkload {
 	public static void execution(int clientNumber) throws Exception {
 		int numConcurrentWorkloadThreads = clientNumber;
 		String serverAddress = "http://localhost:8081";
-		boolean localTest = false;
+		boolean localTest = true;
 		List<WorkerRunResult> workerRunResults = new ArrayList<WorkerRunResult>();
 		List<Future<WorkerRunResult>> runResults = new ArrayList<Future<WorkerRunResult>>();
 
