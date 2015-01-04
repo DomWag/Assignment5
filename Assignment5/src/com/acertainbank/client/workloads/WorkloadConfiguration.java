@@ -1,6 +1,7 @@
 package com.acertainbank.client.workloads;
 
 import com.acertainbank.AccountManager;
+import com.acertainbank.business.PartitionFileSystem;
 
 public class WorkloadConfiguration {
 
@@ -8,7 +9,16 @@ public class WorkloadConfiguration {
 	private AccountManager accountManager = null;
 	private int warmUpRuns = 10;
 	private int numActualRuns = 50;	
+	private PartitionFileSystem fileSystem = null;
 	
+	public PartitionFileSystem getFileSystem() {
+		return fileSystem;
+	}
+
+	public void setFileSystem(PartitionFileSystem fileSystem) {
+		this.fileSystem = fileSystem;
+	}
+
 	public int getNumActualRuns() {
 		return numActualRuns;
 	}

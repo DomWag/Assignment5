@@ -13,7 +13,8 @@ import java.util.concurrent.Future;
 
 import com.acertainbank.AccountManager;
 import com.acertainbank.business.Account;
-import com.acertainbank.business.CertainBank;
+import com.acertainbank.business.CertainBankPartition;
+import com.acertainbank.business.PartitionFileSystem;
 import com.acertainbank.client.AccountManagerProxy;
 import com.acertainbank.client.BankClientConstants;
 
@@ -48,7 +49,7 @@ public class CertainWorkload {
 	public static void execution(int clientNumber) throws Exception {
 		int numConcurrentWorkloadThreads = clientNumber;
 		String serverAddress = "http://localhost:8081";
-		boolean localTest = true;
+		boolean localTest = false;
 		List<WorkerRunResult> workerRunResults = new ArrayList<WorkerRunResult>();
 		List<Future<WorkerRunResult>> runResults = new ArrayList<Future<WorkerRunResult>>();
 
@@ -59,27 +60,31 @@ public class CertainWorkload {
 		localTest = (localTestProperty != null) ? Boolean
 				.parseBoolean(localTestProperty) : localTest;
 
-		CertainBank bank = null;
+
 		AccountManager accountManager = null;
+		
 		if (localTest) {
-			CertainBank aBank = new CertainBank();
-			bank = aBank;
-			accountManager = aBank;
+			
+			PartitionFileSystem fileSystem = new PartitionFileSystem();
+			accountManager = fileSystem;
 		
 		} else {
 			accountManager = new AccountManagerProxy(serverAddress + "/accountManager");
 		}
 
 		// Generate data in the bookstore before running the workload
-		initializeBankData(bank);
+		
+		PartitionFileSystem fileSystem = new PartitionFileSystem();
+		initializeBankData(fileSystem);
+		
 	
-
 		ExecutorService exec = Executors
 				.newFixedThreadPool(numConcurrentWorkloadThreads);
 
 		for (int i = 0; i < numConcurrentWorkloadThreads; i++) {
 			WorkloadConfiguration config = new WorkloadConfiguration(accountManager);
-			Worker workerTask = new Worker(config, bank);
+			config.setFileSystem(fileSystem);
+			Worker workerTask = new Worker(config);
 			// Keep the futures to wait for the result from the thread
 			runResults.add(exec.submit(workerTask));
 		}
@@ -124,18 +129,35 @@ public class CertainWorkload {
 		System.out.println("Throughput: "+throughput);
 	}
 	
-	public static void initializeBankData(CertainBank acertainbank)  {
+	public static void initializeBankData(PartitionFileSystem fileSystem)  {
 		
-		HashMap<Integer, HashSet<Account>> branchAccountMap = new HashMap<Integer, HashSet<Account>>();
+		CertainBankPartition bankPartition1 = new CertainBankPartition();
+		CertainBankPartition bankPartition2 = new CertainBankPartition();
+		CertainBankPartition bankPartition3 = new CertainBankPartition();
 		
+		HashMap<Integer, HashSet<Account>> branchAccountMap1 = new HashMap<Integer, HashSet<Account>>();
 		Account bob = new Account(1, 1, 1000);
+		HashSet<Account> accountSet1 = new HashSet<Account>();
+		accountSet1.add(bob);
+		branchAccountMap1.put(1, accountSet1);
+		bankPartition1.setAccountMap(branchAccountMap1);
 		
-		HashSet<Account> accountSet = new HashSet<Account>();
+		HashMap<Integer, HashSet<Account>> branchAccountMap2 = new HashMap<Integer, HashSet<Account>>();
+		Account ted = new Account(2, 1, 500);
+		HashSet<Account> accountSet2 = new HashSet<Account>();
+		accountSet2.add(ted);
+		branchAccountMap1.put(1, accountSet2);
+		bankPartition2.setAccountMap(branchAccountMap2);
 		
-		accountSet.add(bob);
+		HashMap<Integer, HashSet<Account>> branchAccountMap3 = new HashMap<Integer, HashSet<Account>>();
+		Account larry = new Account(3, 1, 200);
+		HashSet<Account> accountSet3 = new HashSet<Account>();
+		accountSet3.add(larry);
+		branchAccountMap1.put(1, accountSet3);
+		bankPartition3.setAccountMap(branchAccountMap3);
 		
-		branchAccountMap.put(1, accountSet);
-		
-		acertainbank.setAccountMap(branchAccountMap);
+		fileSystem.addPartition(bankPartition1);
+		fileSystem.addPartition(bankPartition2);
+		fileSystem.addPartition(bankPartition3);	
 	}
 }

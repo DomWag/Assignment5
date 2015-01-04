@@ -15,26 +15,18 @@ import com.acertainbank.utils.InexistentBranchException;
 import com.acertainbank.utils.NegativeAmountException;
 
 /**
- * @author Dominik Wagner
+ * @author Dominik Wagner and Caleb Larson
  *
  */
-public class CertainBank implements AccountManager {
+public class CertainBankPartition implements AccountManager {
 
 	private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 	private Lock sharedLock = readWriteLock.readLock();
 	private Lock exclusiveLock = readWriteLock.writeLock();
-
+	
 	private HashMap<Integer, HashSet<Account>> branchAccountMap = null;
-
-	public HashMap<Integer, HashSet<Account>> getBranchAccountMap() {
-		return branchAccountMap;
-	}
-
-	public void setAccountMap(HashMap<Integer, HashSet<Account>> branchAccountMap) {
-		this.branchAccountMap = branchAccountMap;
-	}
-
-	public CertainBank() {
+	
+	public CertainBankPartition() {
 		branchAccountMap = new HashMap<Integer, HashSet<Account>>();
 	}
 
@@ -148,6 +140,14 @@ public class CertainBank implements AccountManager {
 		
 		sharedLock.unlock();
 		return sum; 
+	}
+
+	public HashMap<Integer, HashSet<Account>> getBranchAccountMap() {
+		return branchAccountMap;
+	}
+
+	public void setAccountMap(HashMap<Integer, HashSet<Account>> branchAccountMap) {
+		this.branchAccountMap = branchAccountMap;
 	}
 
 }
