@@ -1,4 +1,7 @@
 package com.acertainbank.utils;
+
+import com.acertainbank.business.CertainBankPartition;
+
 /**
  * This class encapsulate the three / four things which are necessary to transfer to the destination.
  * @author Dominik Wagner
@@ -9,11 +12,13 @@ public class TransferObject {
 	int branchID;
 	int accountIdOrg;
 	int accountIdDest;
-	
-	public TransferObject(double amount, int branchID, int accountId){
+	private CertainBankPartition bankPartition;
+
+	public TransferObject(double amount, int branchID, int accountId, CertainBankPartition bankPartition){
 		this.amount = amount;
 		this.branchID = branchID;
 		this.accountIdOrg = accountId;
+		this.bankPartition = bankPartition;
 		
 	}
 	
@@ -49,6 +54,15 @@ public class TransferObject {
 
 	public int getAccountIdDest() {
 		return accountIdDest;
+	}
+	
+	public CertainBankPartition getBankPartition() {
+		return bankPartition;
+	}
+
+
+	public void setBankPartition(CertainBankPartition bankPartition) {
+		this.bankPartition = bankPartition;
 	}
 
 }

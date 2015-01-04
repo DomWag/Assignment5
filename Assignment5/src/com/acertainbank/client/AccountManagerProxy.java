@@ -9,6 +9,7 @@ import org.eclipse.jetty.io.ByteArrayBuffer;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import com.acertainbank.*;
+import com.acertainbank.business.CertainBankPartition;
 import com.acertainbank.business.PartitionFileSystem;
 import com.acertainbank.utils.BankClientConstants;
 import com.acertainbank.utils.BankException;
@@ -23,11 +24,11 @@ public class AccountManagerProxy implements AccountManager {
 	
 	protected HttpClient client;
 	protected String serverAddress;
-
+	private PartitionFileSystem fileSystem;
 	/**
 	 * Initialize the client object
 	 */
-	public AccountManagerProxy(String serverAddress) throws Exception {
+	public AccountManagerProxy(String serverAddress, PartitionFileSystem fileSystem) throws Exception {
 		setServerAddress(serverAddress);
 		client = new HttpClient();
 		client.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
@@ -49,7 +50,7 @@ public class AccountManagerProxy implements AccountManager {
 																					// the
 																					// request
 																					// expires
-		
+		this.fileSystem = fileSystem;
 		client.start();
 	}
 	
@@ -85,23 +86,28 @@ public class AccountManagerProxy implements AccountManager {
 			throw new InexistentAccountException(accountId);
 		}
 		
-		ContentExchange exchange = new ContentExchange();
-		// TODO the server address is not fix, it has to look up
-		String urlString = serverAddress + "/" + BankMessageTag.CREDIT;
-		TransferObject to = new TransferObject(amount, branchId, accountId);
-		String toXMLstring = BankUtility
-				.serializeObjectToXMLString(to);
-		exchange.setMethod("POST");
-		exchange.setURL(urlString);
-		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
-		exchange.setRequestContent(requestContent);
-		try {
-			BankUtility.SendAndRecv(this.client, exchange);
-		} catch (BankException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for (CertainBankPartition bankPartition: fileSystem.getFileSystem()){
+			
+			if (bankPartition.getBranchAccountMap().containsKey(branchId)) {
+		
+				ContentExchange exchange = new ContentExchange();
+				// TODO the server address is not fix, it has to look up
+				String urlString = serverAddress + "/" + BankMessageTag.CREDIT;
+				TransferObject to = new TransferObject(amount, branchId, accountId, bankPartition);
+				String toXMLstring = BankUtility
+						.serializeObjectToXMLString(to);
+				exchange.setMethod("POST");
+				exchange.setURL(urlString);
+				Buffer requestContent = new ByteArrayBuffer(toXMLstring);
+				exchange.setRequestContent(requestContent);
+				try {
+					BankUtility.SendAndRecv(this.client, exchange);
+				} catch (BankException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
-
 	}
 
 	@Override
@@ -116,24 +122,28 @@ public class AccountManagerProxy implements AccountManager {
 			throw new InexistentAccountException(accountId);
 		}
 		
-		ContentExchange exchange = new ContentExchange();
-		// TODO the server adress is not fix, it has to look up
-		String urlString = serverAddress + "/" + BankMessageTag.DEBIT;
-		TransferObject to = new TransferObject(amount, branchId, accountId);
-		String toXMLstring = BankUtility
-				.serializeObjectToXMLString(to);
-		exchange.setMethod("POST");
-		exchange.setURL(urlString);
-		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
-		exchange.setRequestContent(requestContent);
-		try {
-			BankUtility.SendAndRecv(this.client, exchange);
-		} catch (BankException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for (CertainBankPartition bankPartition : fileSystem.getFileSystem()){
+			
+			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
+				
+				ContentExchange exchange = new ContentExchange();
+				// TODO the server adress is not fix, it has to look up
+				String urlString = serverAddress + "/" + BankMessageTag.DEBIT;
+				TransferObject to = new TransferObject(amount, branchId, accountId, bankPartition);
+				String toXMLstring = BankUtility
+						.serializeObjectToXMLString(to);
+				exchange.setMethod("POST");
+				exchange.setURL(urlString);
+				Buffer requestContent = new ByteArrayBuffer(toXMLstring);
+				exchange.setRequestContent(requestContent);
+				try {
+					BankUtility.SendAndRecv(this.client, exchange);
+				} catch (BankException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -148,23 +158,28 @@ public class AccountManagerProxy implements AccountManager {
 			throw new InexistentAccountException(accountIdOrig);
 		}
 		
-		ContentExchange exchange = new ContentExchange();
-		// TODO the server adress is not fix, it has to look up
-		String urlString = serverAddress + "/" + BankMessageTag.TRANSFER;
-		TransferObject to = new TransferObject(amount, branchId, accountIdOrig, accountIdDest);
-		String toXMLstring = BankUtility
-				.serializeObjectToXMLString(to);
-		exchange.setMethod("POST");
-		exchange.setURL(urlString);
-		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
-		exchange.setRequestContent(requestContent);
-		try {
-			BankUtility.SendAndRecv(this.client, exchange);
-		} catch (BankException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for (CertainBankPartition bankPartition : fileSystem.getFileSystem()){
+			
+			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
+		
+				ContentExchange exchange = new ContentExchange();
+				// TODO the server adress is not fix, it has to look up
+				String urlString = serverAddress + "/" + BankMessageTag.TRANSFER;
+				TransferObject to = new TransferObject(amount, branchId, accountIdOrig, accountIdDest);
+				String toXMLstring = BankUtility
+						.serializeObjectToXMLString(to);
+				exchange.setMethod("POST");
+				exchange.setURL(urlString);
+				Buffer requestContent = new ByteArrayBuffer(toXMLstring);
+				exchange.setRequestContent(requestContent);
+				try {
+					BankUtility.SendAndRecv(this.client, exchange);
+				} catch (BankException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
-
 	}
 
 	@Override
@@ -174,25 +189,34 @@ public class AccountManagerProxy implements AccountManager {
 			throw new InexistentBranchException(branchId);
 
 		}
-		ContentExchange exchange = new ContentExchange();
-		// TODO the server adress is not fix, it has to look up
-		String urlString = serverAddress + "/" + BankMessageTag.CALCULATE;
-		TransferObject to = new TransferObject(branchId);
-		String toXMLstring = BankUtility
-				.serializeObjectToXMLString(to);
-		exchange.setMethod("POST");
-		exchange.setURL(urlString);
-		Buffer requestContent = new ByteArrayBuffer(toXMLstring);
-		exchange.setRequestContent(requestContent);
-		double exposure = 0;
 		
-		try {
-			exposure = BankUtility.SendAndRecv(this.client, exchange);
-		} catch (BankException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for (CertainBankPartition bankPartition : fileSystem.getFileSystem()){
+			
+			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
+				
+				ContentExchange exchange = new ContentExchange();
+				// TODO the server adress is not fix, it has to look up
+				String urlString = serverAddress + "/" + BankMessageTag.CALCULATE;
+				TransferObject to = new TransferObject(branchId);
+				String toXMLstring = BankUtility
+				.serializeObjectToXMLString(to);
+				exchange.setMethod("POST");
+				exchange.setURL(urlString);
+				Buffer requestContent = new ByteArrayBuffer(toXMLstring);
+				exchange.setRequestContent(requestContent);
+				double exposure = 0;
+		
+				try {
+					exposure = BankUtility.SendAndRecv(this.client, exchange);
+				} catch (BankException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return exposure;
+			}
 		}
-		return exposure;
+		
+		return 0;
 	}
-
 }

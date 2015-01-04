@@ -19,9 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
-	private CertainBankPartition bankPartition = null;
-	public AccountManagerPartionHTTPMessageHandler(CertainBankPartition bankPartition) {
-		this.bankPartition = bankPartition;
+	
+	public AccountManagerPartionHTTPMessageHandler() {
 	}
 	// TODO Constructor
 
@@ -62,7 +61,7 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				String xml = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject to = (TransferObject) BankUtility.deserializeXMLStringToObject(xml);
 				try {
-					bankPartition.credit(to.getBranchID(), to.getAccountIdOrg(), to.getAmount());
+					to.getBankPartition().credit(to.getBranchID(), to.getAccountIdOrg(), to.getAmount());
 				}  catch (NegativeAmountException nAe){
 					bankResponse.setException(nAe);
 				} catch (InexistentAccountException iAe){
@@ -80,7 +79,7 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				String xml2 = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject to2 = (TransferObject) BankUtility.deserializeXMLStringToObject(xml2);
 				try {
-					bankPartition.debit(to2.getBranchID(), to2.getAccountIdOrg(), to2.getAmount());
+					to2.getBankPartition().debit(to2.getBranchID(), to2.getAccountIdOrg(), to2.getAmount());
 				} catch (NegativeAmountException nAe){
 					bankResponse.setException(nAe);
 				} catch (InexistentAccountException iAe){
@@ -99,7 +98,7 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				String xmlT = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject toT = (TransferObject) BankUtility.deserializeXMLStringToObject(xmlT);
 				try {
-					bankPartition.transfer(toT.getBranchID(), toT.getAccountIdOrg(), toT.getAccountIdDest(), toT.getAmount());
+					toT.getBankPartition().transfer(toT.getBranchID(), toT.getAccountIdOrg(), toT.getAccountIdDest(), toT.getAmount());
 				} catch (NegativeAmountException nAe){
 					bankResponse.setException(nAe);
 				} catch (InexistentAccountException iAe){
@@ -117,7 +116,7 @@ public class AccountManagerPartionHTTPMessageHandler extends AbstractHandler{
 				String xmlCa = BankUtility.extractPOSTDataFromRequest(request);
 				TransferObject toCA = (TransferObject) BankUtility.deserializeXMLStringToObject(xmlCa);
 				try {
-					bankResponse.setCalculation(bankPartition.calculateExposure(toCA.getBranchID()));
+					bankResponse.setCalculation(toCA.getBankPartition().calculateExposure(toCA.getBranchID()));
 				} catch (InexistentBranchException iBe){
 					bankResponse.setException(iBe);
 				}

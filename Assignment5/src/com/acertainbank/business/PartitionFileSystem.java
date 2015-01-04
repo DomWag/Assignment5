@@ -33,7 +33,7 @@ public class PartitionFileSystem implements AccountManager {
 	public void credit(int branchId, int accountId, double amount) throws InexistentBranchException,
 			InexistentAccountException, NegativeAmountException {
 		
-		for (CertainBankPartition bankPartition: fileSystem){
+		for (CertainBankPartition bankPartition : fileSystem){
 			
 			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
 				
@@ -47,7 +47,7 @@ public class PartitionFileSystem implements AccountManager {
 	public void debit(int branchId, int accountId, double amount) throws InexistentBranchException,
 			InexistentAccountException, NegativeAmountException {
 		
-		for (CertainBankPartition bankPartition: fileSystem){
+		for (CertainBankPartition bankPartition : fileSystem){
 			
 			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
 				
@@ -61,7 +61,7 @@ public class PartitionFileSystem implements AccountManager {
 	public void transfer(int branchId, int accountIdOrig, int accountIdDest, double amount)
 			throws InexistentBranchException, InexistentAccountException, NegativeAmountException {
 		
-		for (CertainBankPartition bankPartition: fileSystem){
+		for (CertainBankPartition bankPartition : fileSystem){
 			
 			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
 				
@@ -74,14 +74,13 @@ public class PartitionFileSystem implements AccountManager {
 	@Override
 	public double calculateExposure(int branchId) throws InexistentBranchException {
 		
-		for (CertainBankPartition bankPartition: fileSystem){
+		for (CertainBankPartition bankPartition : fileSystem){
 			
 			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
 				
 				return bankPartition.calculateExposure(branchId);
 			}
 		}
-		
 		return 0;
 	}
 }
