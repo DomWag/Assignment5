@@ -39,7 +39,7 @@ public class CertainBankPartition implements AccountManager {
 			throw new NegativeAmountException(amount);
 		} else if (!branchAccountMap.containsKey(branchId)) {
 			throw new InexistentBranchException(branchId);
-		} else if (!branchAccountMap.get(branchId).contains(accountId)) {
+		} else if (!isAccountInSet(branchAccountMap.get(branchId), accountId)) {
 			throw new InexistentAccountException(accountId);
 		}
 
@@ -63,7 +63,7 @@ public class CertainBankPartition implements AccountManager {
 			throw new NegativeAmountException(amount);
 		} else if (!branchAccountMap.containsKey(branchId)) {
 			throw new InexistentBranchException(branchId);
-		} else if (!branchAccountMap.get(branchId).contains(accountId)) {
+		} else if (!isAccountInSet(branchAccountMap.get(branchId), accountId)) {
 			throw new InexistentAccountException(accountId);
 		}
 		
@@ -88,9 +88,9 @@ public class CertainBankPartition implements AccountManager {
 			throw new NegativeAmountException(amount);
 		} else if (!branchAccountMap.containsKey(branchId)) {
 			throw new InexistentBranchException(branchId);
-		} else if (!branchAccountMap.get(branchId).contains(accountIdOrig)) {
+		} else if (!isAccountInSet(branchAccountMap.get(branchId), accountIdOrig)) {
 			throw new InexistentAccountException(accountIdOrig);
-		}  else if (!branchAccountMap.get(branchId).contains(accountIdDest)) {
+		}  else if (!isAccountInSet(branchAccountMap.get(branchId), accountIdDest)) {
 			throw new InexistentAccountException(accountIdDest);
 		}
 
@@ -140,6 +140,20 @@ public class CertainBankPartition implements AccountManager {
 		
 		sharedLock.unlock();
 		return sum; 
+	}
+	
+	public boolean isAccountInSet(HashSet<Account> accounts, int accountId){
+		
+		for (Account a: accounts){
+			
+			if (a.getAccoundID() == accountId){
+				
+				return true;
+			}
+		}
+		
+		return false;
+		
 	}
 
 	public HashMap<Integer, HashSet<Account>> getBranchAccountMap() {

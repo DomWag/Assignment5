@@ -9,11 +9,10 @@ import com.acertainbank.utils.NegativeAmountException;
 
 public class PartitionFileSystem implements AccountManager {
 	
-	private HashSet<CertainBankPartition> fileSystem;
+	private HashSet<CertainBankPartition> fileSystem = new HashSet<CertainBankPartition>();
 
 	public PartitionFileSystem() {
 
-		this.fileSystem = null;
 	}
 
 	public HashSet<CertainBankPartition> getFileSystem() {
@@ -26,12 +25,17 @@ public class PartitionFileSystem implements AccountManager {
 	
 	public void addPartition (CertainBankPartition toBeAddedPartition){
 		
-		fileSystem.add(toBeAddedPartition);
+		if (toBeAddedPartition != null){
+			
+			fileSystem.add(toBeAddedPartition);
+		}
 	}
 
 	@Override
 	public void credit(int branchId, int accountId, double amount) throws InexistentBranchException,
 			InexistentAccountException, NegativeAmountException {
+		
+		if (fileSystem != null){
 		
 		for (CertainBankPartition bankPartition : fileSystem){
 			
@@ -39,46 +43,53 @@ public class PartitionFileSystem implements AccountManager {
 				
 				bankPartition.credit(branchId, accountId, amount);
 			}
-		}
-		
+			}
+		}	
 	}
 
 	@Override
 	public void debit(int branchId, int accountId, double amount) throws InexistentBranchException,
 			InexistentAccountException, NegativeAmountException {
 		
-		for (CertainBankPartition bankPartition : fileSystem){
+		if (fileSystem != null){
+		
+			for (CertainBankPartition bankPartition : fileSystem){
 			
-			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
+				if (bankPartition.getBranchAccountMap().containsKey(branchId)){
 				
-				bankPartition.debit(branchId, accountId, amount);
+					bankPartition.debit(branchId, accountId, amount);
+				}
 			}
 		}
-		
 	}
 
 	@Override
 	public void transfer(int branchId, int accountIdOrig, int accountIdDest, double amount)
 			throws InexistentBranchException, InexistentAccountException, NegativeAmountException {
 		
-		for (CertainBankPartition bankPartition : fileSystem){
+		if (fileSystem != null){
+		
+			for (CertainBankPartition bankPartition : fileSystem){
 			
-			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
+				if (bankPartition.getBranchAccountMap().containsKey(branchId)){
 				
-				bankPartition.transfer(branchId, accountIdOrig, accountIdDest, amount);
+					bankPartition.transfer(branchId, accountIdOrig, accountIdDest, amount);
+				}
 			}
 		}
-		
 	}
 
 	@Override
 	public double calculateExposure(int branchId) throws InexistentBranchException {
 		
-		for (CertainBankPartition bankPartition : fileSystem){
+		if (fileSystem != null){
+		
+			for (CertainBankPartition bankPartition : fileSystem){
 			
-			if (bankPartition.getBranchAccountMap().containsKey(branchId)){
+				if (bankPartition.getBranchAccountMap().containsKey(branchId)){
 				
-				return bankPartition.calculateExposure(branchId);
+					return bankPartition.calculateExposure(branchId);
+				}
 			}
 		}
 		return 0;
